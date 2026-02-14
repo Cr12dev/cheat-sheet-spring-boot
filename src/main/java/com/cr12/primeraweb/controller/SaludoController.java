@@ -2,9 +2,13 @@ package com.cr12.primeraweb.controller;
 
 import com.cr12.primeraweb.controller.Usuario;
 
+import org.antlr.v4.runtime.misc.NotNull;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.convert.DataSizeUnit;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/usuarios")
 public class SaludoController {
-    //TODO: crear y conectar base de datos SQL con el backend para que los datos no seam temporales con "Spring Data JPA"
+
 
     @Autowired
     private UsuarioService usuarioService;
@@ -31,11 +35,18 @@ public class SaludoController {
 
     //Post | CREAR NUEVO USUARIO
     @PostMapping
-    public String crearUsuario(@RequestBody Usuario usuario) {
-        // Añadir usuario a la base de datos temporal que se ha creado antes:
+    public ResponseEntity<String> crearUsuario(@RequestBody Usuario usuario) {
+        // 1. Verificación básica de seguridad
+        if (usuario.getNombre() == null || usuario.getNombre().isEmpty()) {
+            return ResponseEntity.badRequest().body("El nombre es obligatorio");
+        }
+
+        // 2. Guardar en la base de datos real a través del servicio
         usuarioService.guardar(usuario);
 
-        return "Usuario " + usuario.getNombre() + " creado con exito.";
+        // 3. Devolver una respuesta HTTP 201 (Created)
+        return ResponseEntity.status(200)
+                .body("Usuario " + usuario.getNombre() + " creado con éxito.");
     }
 
     //GET | Listar a todos los usuarios

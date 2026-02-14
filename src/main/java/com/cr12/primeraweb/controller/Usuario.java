@@ -1,6 +1,7 @@
 package com.cr12.primeraweb.controller;
 
 import jakarta.persistence.*;
+import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity                     // Esto sirve para indicar que la clase es
                             // una tabla para una base de datos
@@ -10,7 +11,11 @@ public class Usuario {
     @Id //Clave primaria
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
     private String nombre;
+
+
     private String email;
 
     public String getNombre() {
