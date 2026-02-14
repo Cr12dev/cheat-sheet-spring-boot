@@ -2,6 +2,8 @@ package com.cr12.primeraweb.controller;
 
 import com.cr12.primeraweb.controller.SaludoController;
 
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,43 +12,49 @@ import java.util.List;
 @Service
 public class UsuarioService {
 
-    //Tabla de base de datos temporal
-    private List<Usuario> listaDeUsuarios = new ArrayList<>();
-
-    //Contador manual para la asignacion de ID's
-    private Long ultimoId = 0L;
+    //Tabla de la base de datos real
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     // Logica para buscar por nombre
     public Usuario buscarPorNombre(String nombre){
-        //Bucle para buscar dentro de la tabla de la base de datos Usuario
-        for (Usuario u : listaDeUsuarios) {
-            if (u.getNombre().equalsIgnoreCase(nombre)){
-                return u;
-            }
-        }
-        return null;
+        return usuarioRepository.findByNombreIgnoreCase(nombre).orElse(null);
     }
 
     // Eliminar un usuario de la tabla
+    @Transactional //Para operaciones de borrado personal
     public boolean eliminar(String nombre){
-        return listaDeUsuarios.removeIf(u -> u.getNombre().equalsIgnoreCase(nombre));
+        if (usuarioRepository.findByNombreIgnoreCase(nombre).isPresent()) {
+            usuarioRepository.deleteByNombreIgnoreCase(nombre);
+            return true;
+        }
+        return true;
     }
 
 
     // Se guardan todos los datos en la tabla como forma de servicio
-    public void guardar(Usuario usuario) {
-        //Se aumenta el contador de ID's
-        ultimoId++;
-
-        //Asignamos al usuario el ID que se ha generado
-        usuario.setId(ultimoId);
+    public Usuario guardar(Usuario usuario) {
 
         //Se guarda en la lista
-        listaDeUsuarios.add(usuario);
+        return usuarioRepository.save(usuario);
     }
 
     // Se obtienen todos los datos de la tabla
     public List<Usuario> obtenerTodos() {
-        return listaDeUsuarios;
+        return usuarioRepository.findAll();
+    }
+
+    //Metodo para la logica de la actualizacion
+    public Usuario actualizar(String nombreABuscar, Usuario nuevosDatos) {
+        //Buscar el usuario que queremos en la base de datos
+        return usuarioRepository.findByNombreIgnoreCase(nombreABuscar)
+                .map(usuarioExistente -> {
+                    usuarioExistente.setNombre(nuevosDatos.getNombre());
+                    usuarioExistente.setEmail(nuevosDatos.getEmail());
+
+                    //Se guardan los cambios
+                    return usuarioRepository.save(usuarioExistente);
+                })
+                .orElse(null);
     }
 }

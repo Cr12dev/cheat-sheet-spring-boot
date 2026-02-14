@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/usuarios")
 public class SaludoController {
+    //TODO: crear y conectar base de datos SQL con el backend para que los datos no seam temporales con "Spring Data JPA"
 
     @Autowired
     private UsuarioService usuarioService;
@@ -51,20 +52,16 @@ public class SaludoController {
 
     //UP
     @PutMapping("/{nombreABuscar}")
-    public String actualizarUsuario(@PathVariable String nombreABuscar, @RequestBody Usuario usuarioNuevosDatos){
+    public ResponseEntity<String> actualizarUsuario(@PathVariable String nombreABuscar, @RequestBody Usuario usuarioNuevosDatos) {
 
-        //Bucle para buscar usuarios en la lista de usuarios (en la base de datos)
-        for (Usuario usuario : usuarioService.obtenerTodos()) {
-            //Buscar al usuario en la lista por su nombre
-            if (usuario.getNombre().equalsIgnoreCase(nombreABuscar)) {
-                //Se cambian los datos del body de momento solo el nombre
-                usuario.setNombre(usuarioNuevosDatos.getNombre());
+        Usuario actualizado = usuarioService.actualizar(nombreABuscar, usuarioNuevosDatos);
 
-                return "Usuario " + nombreABuscar + " actualizado a" + usuarioNuevosDatos;
-            }
+        if (actualizado != null) {
+            return ResponseEntity.ok("Usuario " + nombreABuscar + " actualizado con éxito a: " + actualizado.getNombre());
+        } else {
+            return ResponseEntity.status(404)
+                    .body("No se encontró el usuario con nombre: " + nombreABuscar);
         }
-
-        return "No se encontro el usuario con nombre: " + nombreABuscar;
     }
 
     //DEL | Eliminar un usuario de la tabla
