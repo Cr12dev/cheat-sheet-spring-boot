@@ -1,15 +1,9 @@
-import { Component, signal, inject, OnInit } from '@angular/core'; // 1. Corregido el import
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DataService } from './servicios/data';
-
-// 2. Ajustada la interfaz para que coincida con tu clase Java (nombre vs name)
-interface User {
-  id: number;
-  nombre: string;
-  email: string;
-}
+import { User } from './servicios/data';
 
 @Component({
   selector: 'app-root',
@@ -22,10 +16,10 @@ export class App implements OnInit {
   protected readonly title = signal('primeraweb');
   private dataService = inject(DataService);
 
-  // Usamos signals para consistencia con Angular moderno
+  // Signals para manejar el estado de la lista de usuarios
   users = signal<User[]>([]);
 
-  // Objeto para el formulario
+  // Objeto para el formulario (sin ID, ya que lo genera SQL)
   newUser = {
     nombre: '',
     email: '',
@@ -36,29 +30,48 @@ export class App implements OnInit {
   }
 
   cargarUsuarios(): void {
-    this.dataService.obtenerDatos().subscribe((data: any) => {
-      this.users.set(data);
-      console.log('Usuarios cargados:', this.users());
+    // Especificamos que recibimos un array de User
+    this.dataService.obtenerDatos().subscribe({
+      next: (data: User[]) => {
+        this.users.set(data);
+        console.log('Usuarios cargados desde MySQL:', this.users());
+      },
+      error: (error) => console.error('Error al cargar usuarios:', error),
     });
   }
 
   addUser(): void {
-    if (this.newUser.nombre && this.newUser.email) {
-      console.log('Añadiendo usuario:', this.newUser);
-      // Aquí iría la llamada al servicio para añadir
-      // Por ahora simulamos:
-      const nuevo: User = {
-        id: Date.now(),
-        nombre: this.newUser.nombre,
-        email: this.newUser.email,
-      };
-      this.users.update((prev: User[]) => [...prev, nuevo]);
-      this.newUser = { nombre: '', email: '' };
+    if (this.newUser.nombre.trim() && this.newUser.email.trim()) {
+      // Enviamos el objeto al servicio
+      this.dataService.saveUser(this.newUser).subscribe({
+        next: (usuarioCreado: User) => {
+          // Actualizamos la lista con el usuario que devuelve el backend (ya trae ID)
+          this.users.update((prev) => [...prev, usuarioCreado]);
+
+          // Limpiamos el formulario
+          this.newUser = { nombre: '', email: '' };
+          console.log('Usuario guardado con éxito');
+        },
+        error: (error) => {
+          console.error('Error al añadir usuario:', error);
+          alert('Hubo un error al guardar en la base de datos');
+        },
+      });
     }
   }
 
   deleteUser(id: number): void {
-    console.log('Eliminando usuario con id:', id);
-    this.users.update((prev: User[]) => prev.filter((u: User) => u.id !== id));
+    if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+      // 1. Llamada al backend para borrar de la DB real
+      // Asegúrate de implementar deleteUser(id) en tu DataService
+      this.dataService.deleteUser(id).subscribe({
+        next: () => {
+          // 2. Si el borrado en SQL fue bien, lo quitamos de la UI
+          this.users.update((prev) => prev.filter((u) => u.id !== id));
+          console.log('Usuario eliminado de MySQL');
+        },
+        error: (error) => console.error('Error al eliminar:', error),
+      });
+    }
   }
 }
