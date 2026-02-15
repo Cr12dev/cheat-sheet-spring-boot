@@ -40,8 +40,22 @@ public class UsuarioService {
     }
 
     // Se obtienen todos los datos de la tabla
-    public List<Usuario> obtenerTodos() {
-        return usuarioRepository.findAll();
+    public List<UsuarioDTO> obtenerTodos() {
+        List<Usuario> usuarios =  usuarioRepository.findAll();
+
+        //Para combertirlo en una Array
+        List<UsuarioDTO> usuariosDTO = new ArrayList<>();
+
+        for (Usuario usuario : usuarios) {
+            usuariosDTO.add(
+                    new UsuarioDTO(
+                            usuario.getId(),
+                            usuario.getNombre()
+                    )
+            );
+        }
+
+        return usuariosDTO;
     }
 
     //Metodo para la logica de la actualizacion

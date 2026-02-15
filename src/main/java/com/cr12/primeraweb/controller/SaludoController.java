@@ -2,6 +2,7 @@ package com.cr12.primeraweb.controller;
 
 import com.cr12.primeraweb.controller.Usuario;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.hibernate.annotations.BatchSize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +34,16 @@ public class SaludoController {
 //        return "Hola Mundo!" + nombre + edad;
 //    }
 
-    //Post | CREAR NUEVO USUARIO
+
     @PostMapping
     public ResponseEntity<String> crearUsuario(@RequestBody Usuario usuario) {
         // 1. Verificación básica de seguridad
         if (usuario.getNombre() == null || usuario.getNombre().isEmpty()) {
             return ResponseEntity.badRequest().body("El nombre es obligatorio");
+        } else if (usuario.getPassword() == null || usuario.getPassword().isEmpty()) {
+            return ResponseEntity.badRequest().body("La contraseña es obligatoria, tranquil@ no se hará publica");
         }
+
 
         // 2. Guardar en la base de datos real a través del servicio
         usuarioService.guardar(usuario);
@@ -51,7 +55,7 @@ public class SaludoController {
 
     //GET | Listar a todos los usuarios
     @GetMapping
-    public List<Usuario> obtenerTodosLosUsuarios() {
+    public List<UsuarioDTO> obtenerTodosLosUsuarios() {
         return usuarioService.obtenerTodos();
     }
 
