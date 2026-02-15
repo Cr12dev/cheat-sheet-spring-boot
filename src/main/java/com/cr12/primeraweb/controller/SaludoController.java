@@ -4,7 +4,6 @@ import com.cr12.primeraweb.controller.Usuario;
 
 import com.cr12.primeraweb.pedidos.Pedido;
 import com.cr12.primeraweb.pedidos.PedidoService;
-import io.swagger.v3.oas.annotations.Operation;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.hibernate.annotations.BatchSize;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,9 @@
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:25-jdk
 
 WORKDIR /app
 
-COPY target/primeraweb-0.0.1-SNAPSHOT.jar app.jar
+COPY target/backend.jar app.jar
+COPY .env .env
 
 EXPOSE 8643
 
