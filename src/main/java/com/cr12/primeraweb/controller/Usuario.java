@@ -1,7 +1,12 @@
 package com.cr12.primeraweb.controller;
 
+import com.cr12.primeraweb.pedidos.Pedido;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity                     // Esto sirve para indicar que la clase es
                             // una tabla para una base de datos
@@ -18,6 +23,9 @@ public class Usuario {
     private String email;
 
     private String password;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private List<Pedido> pedidos = new ArrayList<>();
 
 
     public String getPassword(){ return password;}

@@ -2,6 +2,8 @@ package com.cr12.primeraweb.controller;
 
 import com.cr12.primeraweb.controller.Usuario;
 
+import com.cr12.primeraweb.pedidos.Pedido;
+import com.cr12.primeraweb.pedidos.PedidoService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.hibernate.annotations.BatchSize;
@@ -22,6 +24,8 @@ public class SaludoController {
 
     @Autowired
     private UsuarioService usuarioService;
+    @Autowired
+    private PedidoService pedidoService;
 
 //    @GetMapping("/hola")
 //    public String holamundo () {
@@ -90,4 +94,8 @@ public class SaludoController {
             return ResponseEntity.status(404).body("No se pudo eliminar: el usuario " + nombre + " no existe.");
         }
     }
+
+
+
+
 }
