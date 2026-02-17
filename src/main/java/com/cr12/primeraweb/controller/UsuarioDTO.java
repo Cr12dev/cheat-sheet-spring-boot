@@ -6,7 +6,7 @@ public class UsuarioDTO {
     private String nombre;
     private String domicilio;
 
-    public UsuarioDTO(Long id, String nombre) {
+    public UsuarioDTO(Long id, String nombre, String domicilio) {
         this.id = id;
         this.nombre = nombre;
         this.domicilio = domicilio;
