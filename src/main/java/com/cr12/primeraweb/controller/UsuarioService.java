@@ -50,7 +50,8 @@ public class UsuarioService {
             usuariosDTO.add(
                     new UsuarioDTO(
                             usuario.getId(),
-                            usuario.getNombre()
+                            usuario.getNombre(),
+                            usuario.getDomicilio()
                     )
             );
         }
