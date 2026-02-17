@@ -4,10 +4,12 @@ public class UsuarioDTO {
 
     private Long id;
     private String nombre;
+    private String domicilio;
 
     public UsuarioDTO(Long id, String nombre) {
         this.id = id;
         this.nombre = nombre;
+        this.domicilio = domicilio;
     }
 
     public Long getId() {
@@ -25,4 +27,10 @@ public class UsuarioDTO {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
+    public void setDomicilio(String nombre) {
+        this.domicilio = domicilio;
+    }
+
+
 }

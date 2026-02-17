@@ -23,10 +23,14 @@ public class Usuario {
     private String email;
 
     private String password;
+    private String domicilio;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<Pedido> pedidos = new ArrayList<>();
 
+    public String getDomicilio(){ return domicilio;}
+
+    public void setDomicilio(){this.domicilio = domicilio;}
 
     public String getPassword(){ return password;}
 
