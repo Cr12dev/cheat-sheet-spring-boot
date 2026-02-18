@@ -1,6 +1,18 @@
 # Cheat Sheet Spring Boot
 
-## Docker
+Small project: a full REST API where I'm learning the basics of Spring Boot to build better things. (**Controllers**, **Repository**, **Services** & **DTOs**)
+
+## ⭐ Stack
+- **Backend**: Java SpringBoot
+    - Lombok
+    - JPA
+-  **Frontend**: Next.ts  (The frontend development has not yet begun.)
+-  **DB**: MySQL
+-  **DevOps**: Docker, maybe kubernetes in the future
+
+
+
+## 🐳 Docker
 
 ### Build
 
